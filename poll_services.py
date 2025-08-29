@@ -13,11 +13,13 @@ async def check_service(client: httpx.AsyncClient, s: service):
             follow_redirects=True,
             timeout=1,
         )
-        print(r.status_code)
+        s.set_error(None)
         s.set_online(r.status_code == 200)
-    except httpx.RequestError as e:
-        print(e)
+        s.set_status(r.status_code)
+    except httpx.HTTPError as e:
+        s.set_error(str(e))
         s.set_online(False)
+        s.set_status(None)
 
 
 def start_async_loop():

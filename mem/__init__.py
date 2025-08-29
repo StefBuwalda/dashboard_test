@@ -6,6 +6,7 @@ class service:
     status: Optional[int]
     online: bool
     public: bool
+    error: Optional[str]
 
     def __init__(self, url: str = "", public: bool = True):
         self.url = url
@@ -13,6 +14,7 @@ class service:
 
         self.online = False
         self.status = None
+        self.error = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -20,13 +22,17 @@ class service:
             "status": self.status,
             "public": self.public,
             "online": self.online,
+            "error": self.error,
         }
 
-    def set_status(self, status: int):
+    def set_status(self, status: Optional[int]):
         self.status = status
 
     def set_online(self, b: bool):
         self.online = b
+
+    def set_error(self, s: Optional[str]):
+        self.error = s
 
 
 services: list[service] = [
