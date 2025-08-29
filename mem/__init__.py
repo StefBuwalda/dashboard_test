@@ -1,5 +1,3 @@
-# import requests as r
-from flask import jsonify, Flask
 from typing import Any, Optional
 
 
@@ -7,11 +5,11 @@ class service:
     url: str
     status: Optional[int]
     online: bool
-    private: bool
+    public: bool
 
-    def __init__(self, url: str = "", private: bool = False):
+    def __init__(self, url: str = "", public: bool = True):
         self.url = url
-        self.private = private
+        self.public = public
 
         self.online = False
         self.status = None
@@ -20,7 +18,7 @@ class service:
         return {
             "url": self.url,
             "status": self.status,
-            "private": self.private,
+            "public": self.public,
             "online": self.online,
         }
 
@@ -31,18 +29,5 @@ class service:
 services: list[service] = [
     service("https://git.ihatemen.uk"),
     service("https://plex.ihatemen.uk"),
-    service("https://truenas.local", True),
+    service("https://truenas.local", False),
 ]
-
-# Flask app to serve status
-app = Flask(__name__)
-
-
-@app.route("/")
-def status():
-    return jsonify([s.to_dict() for s in services])
-
-
-# Only run if directly running file
-if __name__ == "__main__":
-    app.run(debug=True)
