@@ -1,6 +1,6 @@
 # import requests as r
 from flask import jsonify, Flask
-from poll_services import update_services
+from poll_services import start_async_loop
 from mem import services
 import threading
 
@@ -16,7 +16,9 @@ def status():
 
 # Only run if directly running file
 if __name__ == "__main__":
-    threading.Thread(target=update_services, daemon=True).start()
+
+    t = threading.Thread(target=start_async_loop, daemon=True)
+    t.start()
 
     # Run flask app
     app.run(debug=True, use_reloader=False)

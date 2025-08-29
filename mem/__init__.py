@@ -25,6 +25,9 @@ class service:
     def set_status(self, status: int):
         self.status = status
 
+    def set_online(self, b: bool):
+        self.online = b
+
 
 services: list[service] = [
     service("https://git.ihatemen.uk"),
