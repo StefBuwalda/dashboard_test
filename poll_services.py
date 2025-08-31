@@ -1,10 +1,7 @@
 from mem import services, service
 import httpx
-import urllib3
 import asyncio
 import time
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 async def check_service(client: httpx.AsyncClient, s: service):
