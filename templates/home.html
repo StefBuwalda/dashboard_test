@@ -39,10 +39,12 @@
         <a href="${s.url}" class="d-block text-body text-decoration-none m-2 border border-3 ${s.online ? 'border-success' : 'border-danger'}" style="width: 200px">
             <div class="bg-body-tertiary d-flex flex-column align-items-center">
                 <div class="bg-dark w-100">
-                    <h4 class="text-center text-truncate m-0" style="font-size: 1.5rem;">${s.label}</h4>
+                    <h4 class="text-center text-truncate m-0" style="font-size: 1.9rem;">${s.label}</h4>
                 </div>
                 <div class="position-relative ratio ratio-1x1">
-                    <img src="static/icons/${s.id}.${s.icon_filetype}" class="img-fluid">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <img src="static/icons/${s.id}.${s.icon_filetype}" class="img-fluid w-75">
+                    </div>
                     <div>
                         ${s.public ? `` : `<img src='static/lock.svg' class='img-fluid position-absolute bottom-0 end-0 w-25'>`}
                         <div class="position-absolute bottom-0 text-body bg-dark bg-opacity-75 px-1 rounded">${s.ping}ms</div>
