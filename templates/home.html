@@ -41,8 +41,11 @@
                 <div class="bg-dark w-100">
                     <h4 class="text-center text-truncate m-0" style="font-size: 1.5rem;">${s.label}</h4>
                 </div>
-                <div class="ratio ratio-1x1 w-75">
+                <div class="position-relative ratio ratio-1x1">
                     <img src="static/icons/${s.id}.${s.icon_filetype}" class="img-fluid">
+                    ${s.public ? `` : `<div>
+                                        <img src='static/lock.svg' class='img-fluid position-absolute bottom-0 end-0 w-25'>
+                                       </div>` }
                 </div>
             </div>
         </a>
