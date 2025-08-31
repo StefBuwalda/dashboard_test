@@ -47,7 +47,7 @@
                     </div>
                     <div>
                         ${s.public ? `` : `<img src='static/lock.svg' class='img-fluid position-absolute bottom-0 end-0 w-25'>`}
-                        <div class="position-absolute bottom-0 text-body bg-dark bg-opacity-75 px-1 rounded">${s.ping}ms</div>
+                        <div class="position-absolute bottom-0 text-body bg-dark bg-opacity-75 px-1 rounded">${s.online ? s.ping + "ms" : ""}</div>
                     </div>
                 </div>
             </div>
