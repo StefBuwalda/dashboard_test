@@ -62,7 +62,7 @@ class service:
 
 services: list[service] = [
     service(0, "https://git.ihatemen.uk/", "Gitea"),
-    service(1, "https://plex.ihatemen.uk/", "Plex"),
+    service(1, "https://plex.ihatemen.uk/", "Plex", ping_type=1),
     service(2, "https://truenas.local/", "TrueNAS", False),
     service(3, "https://cloud.ihatemen.uk/", "NextCloud"),
     service(4, "https://request.ihatemen.uk/", "Overseerr"),
