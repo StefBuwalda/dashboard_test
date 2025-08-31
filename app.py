@@ -1,5 +1,5 @@
 # import requests as r
-from flask import jsonify, Flask, render_template
+from flask import jsonify, Flask, render_template, send_file
 from poll_services import start_async_loop
 from mem import services
 import threading
@@ -17,6 +17,11 @@ def homepage():
 @app.route("/api/status")
 def status():
     return jsonify([s.to_dict() for s in services])
+
+
+@app.route("/favicon.svg")
+def favicon():
+    return send_file("/static/favicon.svg")
 
 
 # Only run if directly running file
