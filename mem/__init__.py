@@ -2,7 +2,7 @@ from typing import Any, Optional
 
 
 class service:
-    id = int
+    id: int
     url: str
     status: Optional[int]
     online: bool
@@ -10,6 +10,7 @@ class service:
     error: Optional[str]
     ping: Optional[int]
     icon_filetype: str
+    ping_type: int
 
     def __init__(
         self,
@@ -18,11 +19,13 @@ class service:
         label: str = "",
         public: bool = True,
         icon_filetype: str = "svg",
+        ping_type: int = 0,
     ):
         self.id = id
         self.url = url
         self.public = public
         self.label = label
+        self.ping_type = ping_type
 
         self.online = False
         self.status = None
@@ -41,6 +44,7 @@ class service:
             "label": self.label,
             "icon_filetype": self.icon_filetype,
             "id": self.id,
+            "ping_type": self.ping_type,
         }
 
     def set_status(self, status: Optional[int]):
@@ -64,7 +68,9 @@ services: list[service] = [
     service(4, "https://request.ihatemen.uk/", "Overseerr"),
     service(5, "https://id.ihatemen.uk/", "PocketID"),
     service(6, "http://tautulli.local", "Tautulli", False),
-    service(7, "https://transmission.local", "Transmission", False),
+    service(
+        7, "https://transmission.local", "Transmission", False, ping_type=1
+    ),
     service(8, "https://vault.ihatemen.uk", "Vault Warden"),
     service(9, "https://nginx.local", "Nginx (NPM)", False),
 ]
