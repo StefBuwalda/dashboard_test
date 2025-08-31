@@ -12,19 +12,6 @@
 </head>
 
 <body id="main_body" class="m-2 bg-light-subtle d-flex flex-wrap justify-content-center">
-    {% for s in services %}
-    <div class="m-2 border {{'border-success' if s.online else 'border-danger'}} border-3" style="width: 200px">
-        <div class="bg-body-tertiary d-flex flex-column align-items-center">
-            <div class="bg-dark w-100">
-                <h4 class="text-center text-truncate m-0" style="font-size: 1.5rem;">{{s.label}}</h4>
-            </div>
-            <div class="ratio ratio-1x1 w-75">
-                <img src="static/icons/{{s.id}}.{{s.icon_filetype}}" class="img-fluid">
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-
 </body>
 
 <script>
@@ -49,7 +36,7 @@
 
         // Build all service divs as a single string
         main_body.innerHTML = services.map(s => `
-        <div class="m-2 border border-3 ${s.online ? 'border-success' : 'border-danger'}" style="width: 200px">
+        <a href="${s.url}" class="d-block text-body text-decoration-none m-2 border border-3 ${s.online ? 'border-success' : 'border-danger'}" style="width: 200px">
             <div class="bg-body-tertiary d-flex flex-column align-items-center">
                 <div class="bg-dark w-100">
                     <h4 class="text-center text-truncate m-0" style="font-size: 1.5rem;">${s.label}</h4>
@@ -58,7 +45,7 @@
                     <img src="static/icons/${s.id}.${s.icon_filetype}" class="img-fluid">
                 </div>
             </div>
-        </div>
+        </a>
     `).join(''); // join into a single string
     }
 
