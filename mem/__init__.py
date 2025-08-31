@@ -67,10 +67,14 @@ services: list[service] = [
     service(3, "https://cloud.ihatemen.uk/", "NextCloud"),
     service(4, "https://request.ihatemen.uk/", "Overseerr"),
     service(5, "https://id.ihatemen.uk/", "PocketID"),
-    service(6, "http://tautulli.local", "Tautulli", False),
+    service(6, "https://tautulli.local/", "Tautulli", False),
     service(
-        7, "https://transmission.local", "Transmission", False, ping_type=1
+        7, "https://transmission.local/", "Transmission", False, ping_type=1
     ),
-    service(8, "https://vault.ihatemen.uk", "Vault Warden"),
-    service(9, "https://nginx.local", "Nginx (NPM)", False),
+    service(8, "https://vault.ihatemen.uk/", "Vault Warden"),
+    service(9, "https://nginx.local/", "Nginx (NPM)", False),
+    service(10, "https://app.ihatemen.uk/", "Kcal Counter"),
+    service(
+        id=11, url="https://unifi.local/", label="Unifi Server", public=False
+    ),
 ]
