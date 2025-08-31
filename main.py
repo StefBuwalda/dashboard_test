@@ -1,5 +1,5 @@
 # import requests as r
-from flask import jsonify, Flask
+from flask import jsonify, Flask, render_template
 from poll_services import start_async_loop
 from mem import services
 import threading
@@ -10,6 +10,11 @@ app = Flask(__name__)
 
 
 @app.route("/")
+def homepage():
+    return render_template("home.html")
+
+
+@app.route("/status")
 def status():
     return jsonify([s.to_dict() for s in services])
 
@@ -21,4 +26,4 @@ if __name__ == "__main__":
     t.start()
 
     # Run flask app
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True, use_reloader=True)
