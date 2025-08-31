@@ -40,6 +40,7 @@ class service:
             "ping": self.ping,
             "label": self.label,
             "icon_filetype": self.icon_filetype,
+            "id": self.id,
         }
 
     def set_status(self, status: Optional[int]):

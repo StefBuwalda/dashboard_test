@@ -14,7 +14,7 @@ def homepage():
     return render_template("home.html", services=services)
 
 
-@app.route("/status")
+@app.route("/api/status")
 def status():
     return jsonify([s.to_dict() for s in services])
 
