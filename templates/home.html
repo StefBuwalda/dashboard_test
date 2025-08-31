@@ -43,9 +43,10 @@
                 </div>
                 <div class="position-relative ratio ratio-1x1">
                     <img src="static/icons/${s.id}.${s.icon_filetype}" class="img-fluid">
-                    ${s.public ? `` : `<div>
-                                        <img src='static/lock.svg' class='img-fluid position-absolute bottom-0 end-0 w-25'>
-                                       </div>` }
+                    <div>
+                        ${s.public ? `` : `<img src='static/lock.svg' class='img-fluid position-absolute bottom-0 end-0 w-25'>`}
+                        <div class="position-absolute bottom-0 text-body bg-dark bg-opacity-75 px-1 rounded">${s.ping}ms</div>
+                    </div>
                 </div>
             </div>
         </a>
