@@ -9,9 +9,15 @@ class service:
     error: Optional[str]
     ping: Optional[int]
 
-    def __init__(self, url: str = "", public: bool = True):
+    def __init__(
+        self,
+        url: str = "",
+        label: str = "",
+        public: bool = True,
+    ):
         self.url = url
         self.public = public
+        self.label = label
 
         self.online = False
         self.status = None
@@ -26,6 +32,7 @@ class service:
             "online": self.online,
             "error": self.error,
             "ping": self.ping,
+            "label": self.label,
         }
 
     def set_status(self, status: Optional[int]):
@@ -42,14 +49,14 @@ class service:
 
 
 services: list[service] = [
-    service("https://git.ihatemen.uk/"),
-    service("https://plex.ihatemen.uk/"),
-    service("https://truenas.local/", False),
-    service("https://cloud.ihatemen.uk/"),
-    service("https://request.ihatemen.uk/"),
-    service("https://id.ihatemen.uk/"),
-    service("http://tautulli.local", False),
-    service("https://transmission.local", False),
-    service("https://vault.ihatemen.uk"),
-    service("https://nginx.local", False),
+    service("https://git.ihatemen.uk/", "Gitea"),
+    service("https://plex.ihatemen.uk/", "Plex"),
+    service("https://truenas.local/", "TrueNAS", False),
+    service("https://cloud.ihatemen.uk/", "NextCloud"),
+    service("https://request.ihatemen.uk/", "Overseerr"),
+    service("https://id.ihatemen.uk/", "PocketID"),
+    service("http://tautulli.local", "Tautulli", False),
+    service("https://transmission.local", "Transmission", False),
+    service("https://vault.ihatemen.uk", "Vault Warden"),
+    service("https://nginx.local", "Nginx (NPM)", False),
 ]
