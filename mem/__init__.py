@@ -9,7 +9,7 @@ class service:
     public: bool
     error: Optional[str]
     ping: Optional[int]
-    icon_filetype: Optional[str]
+    icon_filetype: str
 
     def __init__(
         self,
@@ -17,7 +17,7 @@ class service:
         url: str = "",
         label: str = "",
         public: bool = True,
-        icon_filetype: Optional[str] = None,
+        icon_filetype: str = "svg",
     ):
         self.id = id
         self.url = url

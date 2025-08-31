@@ -11,16 +11,15 @@
         crossorigin="anonymous"></script>
 </head>
 
-<body id="main_body" class="m-2 bg-light-subtle">
+<body id="main_body" class="m-2 bg-light-subtle d-flex flex-wrap justify-content-center">
     {% for s in services %}
-    <div class="d-inline-block m-2 border {{'border-success' if s.online else 'border-danger'}} border-3"
-        style="width: 200px">
+    <div class="m-2 border {{'border-success' if s.online else 'border-danger'}} border-3" style="width: 200px">
         <div class="bg-body-tertiary d-flex flex-column align-items-center">
             <div class="bg-dark w-100">
                 <h4 class="text-center text-truncate m-0" style="font-size: 1.5rem;">{{s.label}}</h4>
             </div>
-            <div class="ratio ratio-1x1">
-                <img src="static/placeholder.svg" class="img-fluid">
+            <div class="ratio ratio-1x1 w-75">
+                <img src="static/icons/{{s.id}}.{{s.icon_filetype}}" class="img-fluid">
             </div>
         </div>
     </div>
