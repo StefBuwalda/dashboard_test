@@ -2,19 +2,24 @@ from typing import Any, Optional
 
 
 class service:
+    id = int
     url: str
     status: Optional[int]
     online: bool
     public: bool
     error: Optional[str]
     ping: Optional[int]
+    icon_filetype: Optional[str]
 
     def __init__(
         self,
+        id: int,
         url: str = "",
         label: str = "",
         public: bool = True,
+        icon_filetype: Optional[str] = None,
     ):
+        self.id = id
         self.url = url
         self.public = public
         self.label = label
@@ -23,6 +28,7 @@ class service:
         self.status = None
         self.error = None
         self.ping = None
+        self.icon_filetype = icon_filetype
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -33,6 +39,7 @@ class service:
             "error": self.error,
             "ping": self.ping,
             "label": self.label,
+            "icon_filetype": self.icon_filetype,
         }
 
     def set_status(self, status: Optional[int]):
@@ -49,14 +56,14 @@ class service:
 
 
 services: list[service] = [
-    service("https://git.ihatemen.uk/", "Gitea"),
-    service("https://plex.ihatemen.uk/", "Plex"),
-    service("https://truenas.local/", "TrueNAS", False),
-    service("https://cloud.ihatemen.uk/", "NextCloud"),
-    service("https://request.ihatemen.uk/", "Overseerr"),
-    service("https://id.ihatemen.uk/", "PocketID"),
-    service("http://tautulli.local", "Tautulli", False),
-    service("https://transmission.local", "Transmission", False),
-    service("https://vault.ihatemen.uk", "Vault Warden"),
-    service("https://nginx.local", "Nginx (NPM)", False),
+    service(0, "https://git.ihatemen.uk/", "Gitea"),
+    service(1, "https://plex.ihatemen.uk/", "Plex"),
+    service(2, "https://truenas.local/", "TrueNAS", False),
+    service(3, "https://cloud.ihatemen.uk/", "NextCloud"),
+    service(4, "https://request.ihatemen.uk/", "Overseerr"),
+    service(5, "https://id.ihatemen.uk/", "PocketID"),
+    service(6, "http://tautulli.local", "Tautulli", False),
+    service(7, "https://transmission.local", "Transmission", False),
+    service(8, "https://vault.ihatemen.uk", "Vault Warden"),
+    service(9, "https://nginx.local", "Nginx (NPM)", False),
 ]
