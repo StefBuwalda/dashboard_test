@@ -26,4 +26,4 @@ if __name__ == "__main__":
     t.start()
 
     # Run flask app
-    app.run(debug=True, use_reloader=True)
+    app.run(port=80, debug=True, use_reloader=False)
