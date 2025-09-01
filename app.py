@@ -25,11 +25,6 @@ with app.app_context():
     upgrade()
 
 
-class logs(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    dateCreated = db.Column(db.DateTime, nullable=False)
-
-
 @app.route("/")
 def homepage():
     return render_template("home.html", services=services)
