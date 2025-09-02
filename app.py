@@ -1,18 +1,11 @@
 # import requests as r
-from flask import jsonify, Flask, render_template, send_file
+from flask import jsonify, render_template, send_file
 from poll_services import start_async_loop
-from mem import services
+from mem import services, app
 import threading
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate, init, upgrade
+from flask_migrate import init, upgrade
 from pathlib import Path
 
-# Flask app to serve status
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
-
-db = SQLAlchemy(app=app)
-migration = Migrate(app=app, db=db)
 
 # Init and upgrade
 with app.app_context():

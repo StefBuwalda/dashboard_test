@@ -1,4 +1,7 @@
 from typing import Any, Optional
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 
 class service:
@@ -78,3 +81,10 @@ services: list[service] = [
         id=11, url="https://unifi.local/", label="Unifi Server", public=False
     ),
 ]
+
+# Flask app to serve status
+app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+
+db = SQLAlchemy(app=app)
+migration = Migrate(app=app, db=db)
