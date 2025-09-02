@@ -14,13 +14,14 @@ async def check_service(client: httpx.AsyncClient, s: service) -> log:
                 r = await client.head(
                     url=s.url,
                     follow_redirects=True,
-                    timeout=1,
+                    timeout=4,
                 )
             case 1:
                 r = await client.get(
                     url=s.url,
                     follow_redirects=True,
-                    timeout=1,
+                    timeout=4,
+                    headers={"Host": "plex.ihatemen.uk"},
                 )
             case _:
                 raise httpx.HTTPError("Unknown ping type")
@@ -29,7 +30,13 @@ async def check_service(client: httpx.AsyncClient, s: service) -> log:
         s.set_online(r.status_code == 200)
         s.set_status(r.status_code)
         s.set_ping(int((after - before) * 1000))
-    except httpx.HTTPError as e:
+    except httpx.ConnectTimeout:
+        s.set_error("Connection Timeout")
+        s.set_online(False)
+        s.set_status(None)
+        s.set_ping(None)
+    except Exception as e:
+        print(type(e))
         s.set_error(str(e))
         s.set_online(False)
         s.set_status(None)
@@ -42,6 +49,11 @@ def start_async_loop():
     asyncio.set_event_loop(loop)
     asyncio.run_coroutine_threadsafe(update_services(loop=loop), loop=loop)
     loop.run_forever()
+
+
+async def sleepTask():
+    await asyncio.sleep(5)
+    return log()
 
 
 async def update_services(loop: asyncio.AbstractEventLoop):
@@ -58,7 +70,9 @@ async def update_services(loop: asyncio.AbstractEventLoop):
                 check_service(public_client if s.public else local_client, s)
                 for s in services
             ]
+            tasks.append(sleepTask())
             logs = await asyncio.gather(*tasks)
+            logs = logs[:-1]
             try:
                 session.add_all(logs)
                 session.commit()
@@ -67,4 +81,3 @@ async def update_services(loop: asyncio.AbstractEventLoop):
                 raise e
             finally:
                 session.close()
-            await asyncio.sleep(2)
