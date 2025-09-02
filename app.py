@@ -1,19 +1,19 @@
 # import requests as r
 from flask import jsonify, render_template, send_file
 from poll_services import start_async_loop
-from mem import services, app
+from mem import services, app, db
 import threading
-from flask_migrate import init, upgrade
+from flask_migrate import upgrade, stamp
 from pathlib import Path
 
 
 # Init and upgrade
 with app.app_context():
-    # Check if DB file or migrations folder is missing
-    if not (
-        Path("./instance/app.db").is_file() and Path("./migrations").is_dir()
-    ):
-        init()
+    # Check if DB file is missing
+    if not (Path("./instance/app.db").is_file()):
+        with app.app_context():
+            db.create_all()
+        stamp()
     # Upgrade db if any new migrations exist
     upgrade()
 
