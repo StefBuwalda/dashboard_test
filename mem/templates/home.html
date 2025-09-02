@@ -2,7 +2,7 @@
 <html lang="en" data-bs-theme="dark">
 
 <head>
-    <meta ame="viewport" content="width=device-width, initial-scale=1" charset=" UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset=" UTF-8">
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -16,9 +16,9 @@
 </head>
 
 <body class="m-2 bg-light-subtle">
-    <div class="progress" style="height: 20px;">
+    <div class="progress" style="height: auto;">
         <div id="progressBar" class="progress-bar rounded-pill" role="progressbar" style="width: 100%; margin: 0 auto;">
-            5s
+            <h5 class="m-0">5s</h5>
         </div>
     </div>
     <div id="main_body" class="d-flex flex-wrap justify-content-center"></div>
@@ -55,7 +55,7 @@
             const ratio = Math.min(elapsed / duration, 1);
 
             progressBar.style.width = 100 * (1 - ratio) + "%";
-            progressBar.textContent = (interval * (1 - ratio) / 1000).toFixed(1) + "s";
+            progressBar.innerHTML = "<h5 class='m-0'>" + (interval * (1 - ratio) / 1000).toFixed(1) + "s</h5>";
 
             if (ratio < 1) {
                 requestAnimationFrame(frame);
@@ -75,10 +75,10 @@
 
         // Build all service divs as a single string
         main_body.innerHTML = services.map(s => `
-        <a href="${s.url}" class="d-block text-body text-decoration-none m-2 border border-3 ${s.online ? 'border-success' : 'border-danger'}" style="width: 200px">
+        <a href="${s.url}" class="d-block text-body text-decoration-none m-2 border border-3 ${s.online ? 'border-success' : 'border-danger'}" style="width: 175px">
             <div class="bg-body-tertiary d-flex flex-column align-items-center">
                 <div class="bg-dark w-100">
-                    <h4 class="text-center text-truncate m-0 p-1" style="font-size: 1.9rem;">${s.label}</h4>
+                    <h4 class="text-center text-truncate m-0 p-1">${s.label}</h4>
                 </div>
                 <div class="position-relative ratio ratio-1x1">
                     <div class="d-flex justify-content-center align-items-center">
