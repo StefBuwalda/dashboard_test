@@ -9,10 +9,17 @@
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 </head>
 
-<body id="main_body" class="m-2 bg-light-subtle d-flex flex-wrap justify-content-center">
+<body class="m-2 bg-light-subtle">
+    <div class="progress">
+        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+    </div>
+    <div id="main_body" class="d-flex flex-wrap justify-content-center"></div>
 </body>
 
 <script>
+    let progress = 0;
+    const progressBar = document.getElementById('progress-bar');
+    const interval = 5000; // 5 seconds
     const main_body = document.getElementById("main_body");
     const url = '/api/status';
 
@@ -25,7 +32,19 @@
             })
             .catch(error => console.error("Error fetching data", error))
             .finally(() => {
-                setTimeout(fetchData, 5000); // schedule next request after 5 seconds
+                progress = 0;
+                progressBar.style.width = '0%';
+                // Start progress animation
+                const step = 50; // ms
+                const increment = step / interval * 100;
+                const progressInterval = setInterval(() => {
+                    progress += increment;
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                    }
+                    progressBar.style.width = `${Math.min(progress, 100)}%`;
+                }, step);
+                setTimeout(fetchData, interval); // schedule next request after 5 seconds
             });
     }
 
