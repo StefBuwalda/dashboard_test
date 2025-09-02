@@ -13,5 +13,4 @@ RUN chmod +x ./entrypoint.sh
 
 ENV FLASK_APP=app.py
 
-ENTRYPOINT ["./entrypoint.sh"]
-CMD []
+CMD ["flask", "run"]
