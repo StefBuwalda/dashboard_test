@@ -5,6 +5,7 @@ from mem import services, app, db
 import threading
 from flask_migrate import upgrade, stamp
 from pathlib import Path
+from models import service
 
 
 # Init and upgrade
@@ -16,6 +17,19 @@ with app.app_context():
         stamp()
     # Upgrade db if any new migrations exist
     upgrade()
+
+with app.app_context():
+    if not db.session.query(service).first():
+        for s in services:
+            db.session.add(
+                service(
+                    url=s.url,
+                    label=s.label,
+                    public_access=s.public,
+                    ping_method=s.ping_type,
+                )
+            )
+        db.session.commit()
 
 
 @app.route("/")

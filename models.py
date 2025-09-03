@@ -1,5 +1,6 @@
 from mem import db
 from datetime import datetime, timezone
+from validators import url as is_url
 
 
 class log(db.Model):
@@ -19,5 +20,13 @@ class service(db.Model):
     public_access: bool = db.Column(db.Boolean, nullable=False)
     ping_method: int = db.Column(db.Integer, nullable=False)
 
-    def __init__(self):
+    def __init__(
+        self, url: str, label: str, public_access: bool, ping_method: int
+    ):
+        if not is_url(url):
+            raise Exception("URL IS NOT A VALID URL")
         super().__init__()
+        self.url = url
+        self.label = label
+        self.public_access = public_access
+        self.ping_method = ping_method
