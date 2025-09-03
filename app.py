@@ -49,7 +49,6 @@ def favicon():
 
 # Only run if directly running file
 if __name__ == "__main__":
-
     t = threading.Thread(target=start_async_loop, daemon=True)
     t.start()
 

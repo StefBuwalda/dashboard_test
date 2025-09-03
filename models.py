@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 
 class log(db.Model):
-    id: int = db.Column(db.Integer, primary_key=True)
+    id: int = db.Column(db.Integer, primary_key=True)  # TODO: Switch to UUID
     dateCreated: datetime = db.Column(db.DateTime, nullable=False, index=True)
     service_id: int = db.Column(
         db.Integer,
@@ -14,8 +14,10 @@ class log(db.Model):
     )
     ping: Optional[int] = db.Column(db.Integer, nullable=True)
 
-    def __init__(self):
+    def __init__(self, service_id: int, ping: Optional[int]):
         super().__init__()
+        self.service_id = service_id
+        self.ping = ping
 
         self.dateCreated = datetime.now(timezone.utc)
 

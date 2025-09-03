@@ -31,7 +31,10 @@ async def check_service(client: aiohttp.ClientSession, s: service) -> log:
         s.set_error(None)
         s.set_online(r.status == 200)
         s.set_status(r.status)
-        s.set_ping(int((after - before) * 1000))
+        if r.status != 200:
+            s.set_ping(None)
+        else:
+            s.set_ping(int((after - before) * 1000))
     except aiohttp.ConnectionTimeoutError:
         s.set_error("Connection Timeout")
         s.set_online(False)
@@ -43,7 +46,7 @@ async def check_service(client: aiohttp.ClientSession, s: service) -> log:
         s.set_online(False)
         s.set_status(None)
         s.set_ping(None)
-    return log()
+    return log(service_id=s.id, ping=s.ping)
 
 
 def start_async_loop():
@@ -53,11 +56,6 @@ def start_async_loop():
     loop.run_forever()
 
 
-async def sleepTask():
-    await asyncio.sleep(5)
-    return log()
-
-
 async def update_services(loop: asyncio.AbstractEventLoop):
     print("Starting service updates...")
     with app.app_context():
@@ -65,10 +63,10 @@ async def update_services(loop: asyncio.AbstractEventLoop):
     client = aiohttp.ClientSession()
     while True:
         session = WorkerSession()
+        sleeptask = asyncio.create_task(asyncio.sleep(5))
         tasks = [check_service(client=client, s=s) for s in services]
-        tasks.append(sleepTask())
         logs = await asyncio.gather(*tasks)
-        logs = logs[:-1]
+        await sleeptask
         try:
             session.add_all(logs)
             session.commit()
