@@ -17,6 +17,7 @@ async def check_service(client: aiohttp.ClientSession, s: service) -> log:
                     ssl=True if s.public_access else False,
                     allow_redirects=True,
                     timeout=timeout,
+                    auto_decompress=False,
                 )
             case 1:
                 r = await client.get(
@@ -24,6 +25,7 @@ async def check_service(client: aiohttp.ClientSession, s: service) -> log:
                     ssl=True if s.public_access else False,
                     allow_redirects=True,
                     timeout=timeout,
+                    auto_decompress=False,
                 )
             case _:
                 raise Exception("UNKNOWN PING TYPE")
