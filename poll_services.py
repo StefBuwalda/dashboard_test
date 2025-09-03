@@ -1,8 +1,8 @@
-from mem import services, service, db, app
+from mem import db, app
 import aiohttp
 import asyncio
 import time
-from models import log
+from models import log, service
 from sqlalchemy.orm import sessionmaker
 
 
@@ -10,18 +10,18 @@ async def check_service(client: aiohttp.ClientSession, s: service) -> log:
     try:
         timeout = aiohttp.client.ClientTimeout(total=4)
         before = time.perf_counter()
-        match s.ping_type:
+        match s.ping_method:
             case 0:
                 r = await client.head(
                     url=s.url,
-                    ssl=True if s.public else False,
+                    ssl=True if s.public_access else False,
                     allow_redirects=True,
                     timeout=timeout,
                 )
             case 1:
                 r = await client.get(
                     url=s.url,
-                    ssl=True if s.public else False,
+                    ssl=True if s.public_access else False,
                     allow_redirects=True,
                     timeout=timeout,
                 )
@@ -29,13 +29,13 @@ async def check_service(client: aiohttp.ClientSession, s: service) -> log:
                 raise Exception("UNKNOWN PING TYPE")
         after = time.perf_counter()
         if r.status == 200:
-            return log(service_id=s.id + 1, ping=int((after - before) * 1000))
+            return log(service_id=s.id, ping=int((after - before) * 1000))
         else:
-            return log(service_id=s.id + 1, ping=None)
+            return log(service_id=s.id, ping=None)
     except aiohttp.ConnectionTimeoutError:
-        return log(service_id=s.id + 1, ping=None)
+        return log(service_id=s.id, ping=None)
     except Exception:
-        return log(service_id=s.id + 1, ping=None)
+        return log(service_id=s.id, ping=None)
 
 
 def start_async_loop():
@@ -53,7 +53,10 @@ async def update_services(loop: asyncio.AbstractEventLoop):
     while True:
         session = WorkerSession()
         sleeptask = asyncio.create_task(asyncio.sleep(5))
-        tasks = [check_service(client=client, s=s) for s in services]
+        tasks = [
+            check_service(client=client, s=s)
+            for s in session.query(service).all()
+        ]
         logs = await asyncio.gather(*tasks)
         await sleeptask
         try:
