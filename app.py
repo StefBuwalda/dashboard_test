@@ -5,8 +5,8 @@ from mem import services, app, db
 import threading
 from flask_migrate import upgrade, stamp
 from pathlib import Path
-from models import service
-
+from models import service, log
+from typing import Any, Optional, cast
 
 # Init and upgrade
 with app.app_context():
@@ -39,7 +39,20 @@ def homepage():
 
 @app.route("/api/status")
 def status():
-    return jsonify([s.to_dict() for s in services])
+    results: list[dict[str, Any]] = []
+    with app.app_context():
+        a = db.session.query(service).all()
+        for s in a:
+            b = cast(
+                Optional[log],
+                s.logs.order_by(
+                    log.dateCreated.desc()  # type: ignore
+                ).first(),
+            )
+            if b:
+                results.append(s.to_dict() | b.to_dict())
+
+    return jsonify(results)
 
 
 @app.route("/favicon.svg")

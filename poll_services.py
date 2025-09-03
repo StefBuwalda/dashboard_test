@@ -28,25 +28,14 @@ async def check_service(client: aiohttp.ClientSession, s: service) -> log:
             case _:
                 raise Exception("UNKNOWN PING TYPE")
         after = time.perf_counter()
-        s.set_error(None)
-        s.set_online(r.status == 200)
-        s.set_status(r.status)
-        if r.status != 200:
-            s.set_ping(None)
+        if r.status == 200:
+            return log(service_id=s.id + 1, ping=int((after - before) * 1000))
         else:
-            s.set_ping(int((after - before) * 1000))
+            return log(service_id=s.id + 1, ping=None)
     except aiohttp.ConnectionTimeoutError:
-        s.set_error("Connection Timeout")
-        s.set_online(False)
-        s.set_status(None)
-        s.set_ping(None)
-    except Exception as e:
-        print(type(e))
-        s.set_error(str(e))
-        s.set_online(False)
-        s.set_status(None)
-        s.set_ping(None)
-    return log(service_id=s.id, ping=s.ping)
+        return log(service_id=s.id + 1, ping=None)
+    except Exception:
+        return log(service_id=s.id + 1, ping=None)
 
 
 def start_async_loop():

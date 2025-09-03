@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -7,12 +7,8 @@ from flask_migrate import Migrate
 class service:
     id: int
     url: str
-    status: Optional[int]
     online: bool
     public: bool
-    error: Optional[str]
-    ping: Optional[int]
-    icon_filetype: str
     ping_type: int
 
     def __init__(
@@ -21,7 +17,6 @@ class service:
         url: str = "",
         label: str = "",
         public: bool = True,
-        icon_filetype: str = "svg",
         ping_type: int = 0,
     ):
         self.id = id
@@ -30,37 +25,14 @@ class service:
         self.label = label
         self.ping_type = ping_type
 
-        self.online = False
-        self.status = None
-        self.error = None
-        self.ping = None
-        self.icon_filetype = icon_filetype
-
     def to_dict(self) -> dict[str, Any]:
         return {
             "url": self.url,
-            "status": self.status,
             "public": self.public,
-            "online": self.online,
-            "error": self.error,
-            "ping": self.ping,
             "label": self.label,
-            "icon_filetype": self.icon_filetype,
             "id": self.id,
             "ping_type": self.ping_type,
         }
-
-    def set_status(self, status: Optional[int]):
-        self.status = status
-
-    def set_online(self, b: bool):
-        self.online = b
-
-    def set_error(self, s: Optional[str]):
-        self.error = s
-
-    def set_ping(self, n: Optional[int]):
-        self.ping = n
 
 
 services: list[service] = [

@@ -21,6 +21,14 @@ class log(db.Model):
 
         self.dateCreated = datetime.now(timezone.utc)
 
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "log_id": self.id,
+            "service_id": self.service_id,
+            "ping": self.ping,
+            "dateCreated": self.dateCreated,
+        }
+
 
 class service(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)  # TODO: Switch to UUID
@@ -29,7 +37,7 @@ class service(db.Model):
     public_access: bool = db.Column(db.Boolean, nullable=False)
     ping_method: int = db.Column(db.Integer, nullable=False)
 
-    logs = db.relationship("log")
+    logs = db.relationship("log", lazy="dynamic")
 
     def __init__(
         self, url: str, label: str, public_access: bool, ping_method: int
@@ -49,6 +57,6 @@ class service(db.Model):
             "url": self.url,
             "public_access": self.public_access,
             "label": self.label,
-            "id": self.id,
+            "service_id": self.id,
             "ping_method": self.ping_method,
         }
