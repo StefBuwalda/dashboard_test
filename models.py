@@ -1,6 +1,7 @@
 from mem import db
 from datetime import datetime, timezone
 from validators import url as is_url
+from typing import Any
 
 
 class log(db.Model):
@@ -25,8 +26,19 @@ class service(db.Model):
     ):
         if not is_url(url):
             raise Exception("URL IS NOT A VALID URL")
+        if len(label) > 15:
+            raise Exception("LABEL EXCEEDS MAXIMUM LENGTH (15)")
         super().__init__()
         self.url = url
         self.label = label
         self.public_access = public_access
         self.ping_method = ping_method
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "url": self.url,
+            "public_access": self.public_access,
+            "label": self.label,
+            "id": self.id,
+            "ping_method": self.ping_method,
+        }
