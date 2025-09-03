@@ -1,36 +1,38 @@
 from mem import services, service, db, app
-import httpx
+import aiohttp
 import asyncio
 import time
 from models import log
 from sqlalchemy.orm import sessionmaker
 
 
-async def check_service(client: httpx.AsyncClient, s: service) -> log:
+async def check_service(client: aiohttp.ClientSession, s: service) -> log:
     try:
+        timeout = aiohttp.client.ClientTimeout(total=4)
         before = time.perf_counter()
         match s.ping_type:
             case 0:
                 r = await client.head(
                     url=s.url,
-                    follow_redirects=True,
-                    timeout=4,
+                    ssl=True if s.public else False,
+                    allow_redirects=True,
+                    timeout=timeout,
                 )
             case 1:
                 r = await client.get(
                     url=s.url,
-                    follow_redirects=True,
-                    timeout=4,
-                    headers={"Host": "plex.ihatemen.uk"},
+                    ssl=True if s.public else False,
+                    allow_redirects=True,
+                    timeout=timeout,
                 )
             case _:
-                raise httpx.HTTPError("Unknown ping type")
+                raise Exception("UNKNOWN PING TYPE")
         after = time.perf_counter()
         s.set_error(None)
-        s.set_online(r.status_code == 200)
-        s.set_status(r.status_code)
+        s.set_online(r.status == 200)
+        s.set_status(r.status)
         s.set_ping(int((after - before) * 1000))
-    except httpx.ConnectTimeout:
+    except aiohttp.ConnectionTimeoutError:
         s.set_error("Connection Timeout")
         s.set_online(False)
         s.set_status(None)
@@ -60,24 +62,18 @@ async def update_services(loop: asyncio.AbstractEventLoop):
     print("Starting service updates...")
     with app.app_context():
         WorkerSession = sessionmaker(bind=db.engine)
-    async with (
-        httpx.AsyncClient() as public_client,
-        httpx.AsyncClient(verify=False) as local_client,
-    ):
-        while True:
-            session = WorkerSession()
-            tasks = [
-                check_service(public_client if s.public else local_client, s)
-                for s in services
-            ]
-            tasks.append(sleepTask())
-            logs = await asyncio.gather(*tasks)
-            logs = logs[:-1]
-            try:
-                session.add_all(logs)
-                session.commit()
-            except Exception as e:
-                session.rollback()
-                raise e
-            finally:
-                session.close()
+    client = aiohttp.ClientSession()
+    while True:
+        session = WorkerSession()
+        tasks = [check_service(client=client, s=s) for s in services]
+        tasks.append(sleepTask())
+        logs = await asyncio.gather(*tasks)
+        logs = logs[:-1]
+        try:
+            session.add_all(logs)
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
+        finally:
+            session.close()
