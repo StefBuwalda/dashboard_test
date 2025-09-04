@@ -37,6 +37,11 @@ def homepage():
     return render_template("home.html", services=services)
 
 
+@app.route("/chart")
+def chart():
+    return render_template("chart.html")
+
+
 @app.route("/api/status")
 def status():
     results: list[dict[str, Any]] = []
