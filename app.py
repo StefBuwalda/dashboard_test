@@ -11,7 +11,7 @@ import json
 from datetime import timedelta
 
 
-def split_graph(logs: list[log]) -> tuple[list[str], list[Optional[int]]]:
+def prepare_chart_data(logs: list[log]) -> tuple[list[str], list[Optional[int]]]:
     if len(logs) <= 0:
         return ([], [])
 
@@ -74,7 +74,7 @@ def chart(id: int):
             )
         else:
             return abort(code=403)
-    x, y = split_graph(logs=logs)
+    x, y = prepare_chart_data(logs=logs)
 
     return render_template(
         "chart.html",
