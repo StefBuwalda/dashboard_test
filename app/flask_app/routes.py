@@ -46,14 +46,15 @@ def homepage():
 
 @bp.route("/chart/<int:id>")
 def chart(id: int):
+    one_hour_ago = datetime.now(timezone.utc) - timedelta(hours=1)
     with app.app_context():
         logs = []
         s = db.session.query(service).filter_by(id=id).first()
         if s:
             logs = cast(
                 list[log],
-                s.logs.order_by(log.dateCreated.desc())  # type: ignore
-                .limit(300)
+                s.logs.filter(log.dateCreated >= one_hour_ago)
+                .order_by(log.dateCreated.desc())  # type: ignore
                 .all(),
             )
         else:
