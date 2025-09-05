@@ -27,6 +27,7 @@ async def ping(client: aiohttp.ClientSession, s: service) -> int:
 
 async def check_service(client: aiohttp.ClientSession, s: service) -> log:
     try:
+        # TODO: Use aiohttp latency timing rather than timing it manually
         before = time.perf_counter()
         status = await ping(client=client, s=s)
         after = time.perf_counter()

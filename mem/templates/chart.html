@@ -18,8 +18,7 @@
 
 <script>
 
-    const chartDates = {{ dates| tojson | safe }}.map(dt => new Date(dt));
-
+    const chartDates = ({{ dates | safe }}).map(dt => new Date(dt));
     const data = {
         labels: chartDates,
         datasets: [{

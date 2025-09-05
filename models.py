@@ -13,13 +13,17 @@ class log(db.Model):
         nullable=False,
     )
     ping: Optional[int] = db.Column(db.Integer, nullable=True)
+    timeout: bool = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, service_id: int, ping: Optional[int]):
+    def __init__(
+        self, service_id: int, ping: Optional[int], timeout: bool = False
+    ):
         super().__init__()
         self.service_id = service_id
         self.ping = ping
 
         self.dateCreated = datetime.now(timezone.utc)
+        self.timeout = timeout
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -27,6 +31,7 @@ class log(db.Model):
             "service_id": self.service_id,
             "ping": self.ping,
             "dateCreated": self.dateCreated,
+            "timeout": self.timeout,
         }
 
 

@@ -1,5 +1,5 @@
 # import requests as r
-from flask import jsonify, render_template, send_file
+from flask import jsonify, render_template, send_file, redirect
 from poll_services import start_async_loop
 from mem import services, app, db
 import threading
@@ -8,6 +8,28 @@ from pathlib import Path
 from models import service, log
 from typing import Any, Optional, cast
 import json
+from datetime import timedelta
+
+
+def split_graph(logs: list[log]) -> tuple[list[str], list[Optional[int]]]:
+    if len(logs) <= 0:
+        return ([], [])
+
+    x = [logs[0].dateCreated.isoformat()]
+    y = [logs[0].ping]
+
+    for i in range(1, len(logs)):
+        log1 = logs[i]
+        log2 = logs[i - 1]
+
+        if (log1.dateCreated - log2.dateCreated) > timedelta(seconds=6):
+            x.append(log2.dateCreated.isoformat())
+            y.append(None)
+
+        x.append(log1.dateCreated.isoformat())
+        y.append(log1.ping)
+    return (x, y)
+
 
 # Init and upgrade
 with app.app_context():
@@ -44,11 +66,20 @@ def chart():
         logs = []
         s = db.session.query(service).first()
         if s:
-            logs: list[log] = s.logs.limit(60).all()
+            logs = cast(
+                list[log],
+                s.logs.order_by(log.dateCreated.desc())  # type: ignore
+                .limit(300)
+                .all(),
+            )
+        else:
+            return redirect("/")
+    x, y = split_graph(logs=logs)
+
     return render_template(
         "chart.html",
-        dates=[item.dateCreated.isoformat() for item in logs],
-        values=json.dumps([item.ping for item in logs]),
+        dates=x,
+        values=json.dumps(y),
     )
 
 
