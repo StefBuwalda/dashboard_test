@@ -12,6 +12,8 @@ bp = Blueprint(
     static_folder="static",
 )
 
+# TODO: Move util functions to seperate file (utils.py?)
+
 
 # Prepares log data for chart.js chart
 def prepare_chart_data(
@@ -26,6 +28,9 @@ def prepare_chart_data(
     for i in range(1, len(logs)):
         log1 = logs[i]
         log2 = logs[i - 1]
+
+        # TODO: add timeout duration to log so this can be used
+        # instead of 1.5 * the current timeout + 1.
 
         # Check if the gap in points exceeds a threshold
         if (abs(log1.dateCreatedUTC() - log2.dateCreatedUTC())) > timedelta(

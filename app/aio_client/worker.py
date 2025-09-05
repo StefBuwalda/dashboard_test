@@ -69,6 +69,8 @@ async def update_services():
         # Actual update loop
         while True:
             session = WorkerSession()
+            # TODO: Add http processing time var
+            # instead of just adding 1 second
             sleeptask = asyncio.create_task(asyncio.sleep(timeout_ / 1000 + 1))
             tasks = [
                 ping_service(client=client, s=s)
