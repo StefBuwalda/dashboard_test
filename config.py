@@ -1,1 +1,1 @@
-timeout: int = 4000
+timeout: int = 1000
