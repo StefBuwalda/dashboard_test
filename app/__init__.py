@@ -9,7 +9,8 @@ __all__ = ["app"]
 db = SQLAlchemy(app=app)
 
 # Set up migration
-migration = Migrate(app=app, db=db)
+migrations_dir = Path(__file__).parent / "migrations"
+migration = Migrate(app=app, db=db, directory=str(migrations_dir))
 
 # Init and upgrade
 with app.app_context():

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from app.config import timeout as timeout_
+from config import timeout as timeout_
 import aiohttp
 import asyncio
 import time
