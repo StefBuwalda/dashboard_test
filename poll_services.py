@@ -4,6 +4,7 @@ import asyncio
 import time
 from models import log, service
 from sqlalchemy.orm import sessionmaker
+from config import timeout as timeout_
 
 
 async def ping(client: aiohttp.ClientSession, s: service) -> int:
@@ -53,11 +54,11 @@ async def update_services(loop: asyncio.AbstractEventLoop):
     # Create new session
     with app.app_context():
         WorkerSession = sessionmaker(bind=db.engine)
-    timeout = aiohttp.client.ClientTimeout(total=4)
+    timeout = aiohttp.client.ClientTimeout(total=timeout_ / 1000)
     client = aiohttp.ClientSession(timeout=timeout, auto_decompress=False)
     while True:
         session = WorkerSession()
-        sleeptask = asyncio.create_task(asyncio.sleep(5))
+        sleeptask = asyncio.create_task(asyncio.sleep(timeout_ / 1000 + 1))
         tasks = [
             check_service(client=client, s=s)
             for s in session.query(service).all()

@@ -9,10 +9,14 @@ from models import service, log
 from typing import Any, Optional, cast
 import json
 from datetime import timedelta
+from config import timeout
 
 
-def prepare_chart_data(logs: list[log]) -> tuple[list[str], list[Optional[int]]]:
-    if len(logs) <= 0:
+# Prepares log data for chart.js chart
+def prepare_chart_data(
+    logs: list[log],
+) -> tuple[list[str], list[Optional[int]]]:
+    if len(logs) <= 0:  # Return empty if there are no logs
         return ([], [])
 
     x = [logs[0].dateCreated.isoformat()]
@@ -21,8 +25,11 @@ def prepare_chart_data(logs: list[log]) -> tuple[list[str], list[Optional[int]]]
     for i in range(1, len(logs)):
         log1 = logs[i]
         log2 = logs[i - 1]
-        if (abs(log1.dateCreated - log2.dateCreated)) > timedelta(seconds=6):
 
+        # Check if the gap in points exceeds a threshold
+        if (abs(log1.dateCreated - log2.dateCreated)) > timedelta(
+            milliseconds=1.5 * (timeout + 1000)
+        ):
             x.append(log2.dateCreated.isoformat())
             y.append(None)
 
