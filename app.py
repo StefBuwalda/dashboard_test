@@ -7,6 +7,7 @@ from flask_migrate import upgrade, stamp
 from pathlib import Path
 from models import service, log
 from typing import Any, Optional, cast
+import json
 
 # Init and upgrade
 with app.app_context():
@@ -34,12 +35,21 @@ with app.app_context():
 
 @app.route("/")
 def homepage():
-    return render_template("home.html", services=services)
+    return render_template("home.html")
 
 
 @app.route("/chart")
 def chart():
-    return render_template("chart.html")
+    with app.app_context():
+        logs = []
+        s = db.session.query(service).first()
+        if s:
+            logs: list[log] = s.logs.limit(60).all()
+    return render_template(
+        "chart.html",
+        dates=[item.dateCreated.isoformat() for item in logs],
+        values=json.dumps([item.ping for item in logs]),
+    )
 
 
 @app.route("/api/status")
