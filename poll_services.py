@@ -6,31 +6,31 @@ from models import log, service
 from sqlalchemy.orm import sessionmaker
 
 
+async def ping(client: aiohttp.ClientSession, s: service) -> int:
+    match s.ping_method:
+        case 0:
+            r = await client.head(
+                url=s.url,
+                ssl=True if s.public_access else False,
+                allow_redirects=True,
+            )
+        case 1:
+            r = await client.get(
+                url=s.url,
+                ssl=True if s.public_access else False,
+                allow_redirects=True,
+            )
+        case _:
+            raise Exception("UNKNOWN PING METHOD")
+    return r.status
+
+
 async def check_service(client: aiohttp.ClientSession, s: service) -> log:
     try:
-        timeout = aiohttp.client.ClientTimeout(total=4)
         before = time.perf_counter()
-        match s.ping_method:
-            case 0:
-                r = await client.head(
-                    url=s.url,
-                    ssl=True if s.public_access else False,
-                    allow_redirects=True,
-                    timeout=timeout,
-                    auto_decompress=False,
-                )
-            case 1:
-                r = await client.get(
-                    url=s.url,
-                    ssl=True if s.public_access else False,
-                    allow_redirects=True,
-                    timeout=timeout,
-                    auto_decompress=False,
-                )
-            case _:
-                raise Exception("UNKNOWN PING TYPE")
+        status = await ping(client=client, s=s)
         after = time.perf_counter()
-        if r.status == 200:
+        if status == 200:
             return log(service_id=s.id, ping=int((after - before) * 1000))
         else:
             return log(service_id=s.id, ping=None)
@@ -49,9 +49,11 @@ def start_async_loop():
 
 async def update_services(loop: asyncio.AbstractEventLoop):
     print("Starting service updates...")
+    # Create new session
     with app.app_context():
         WorkerSession = sessionmaker(bind=db.engine)
-    client = aiohttp.ClientSession()
+    timeout = aiohttp.client.ClientTimeout(total=4)
+    client = aiohttp.ClientSession(timeout=timeout, auto_decompress=False)
     while True:
         session = WorkerSession()
         sleeptask = asyncio.create_task(asyncio.sleep(5))
