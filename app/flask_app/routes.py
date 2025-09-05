@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, jsonify, send_file, json
 from typing import cast, Optional, Any
 from datetime import datetime, timedelta, timezone
 from app.config import timeout
-from .models import service, log
+from ..models import service, log
 from app import app, db
 
 bp = Blueprint(
