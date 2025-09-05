@@ -6,9 +6,9 @@ from ..models import service, log
 from app import app, db
 
 bp = Blueprint(
-    "api",
+    "main",
     "__name__",
-    url_prefix="/api",
+    url_prefix="/",
     static_folder="static",
 )
 
@@ -72,7 +72,7 @@ def chart(id: int):
     )
 
 
-@bp.route("/status")
+@bp.route("/api/status")
 def status():
     results: list[dict[str, Any]] = []
     with app.app_context():
