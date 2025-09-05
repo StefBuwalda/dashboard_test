@@ -1,4 +1,4 @@
-from mem import db
+from app import db
 from datetime import datetime, timezone
 from validators import url as is_url
 from typing import Any, Optional

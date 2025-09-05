@@ -82,10 +82,10 @@
                 </div>
                 <div class="position-relative ratio ratio-1x1">
                     <div class="d-flex justify-content-center align-items-center">
-                        <img src="static/icons/${s.service_id - 1}.svg" class="img-fluid w-75">
+                        <img src="{{ url_for('static', filename="icons") }}/${s.service_id - 1}.svg" class="img-fluid w-75">
                     </div>
                     <div>
-                        ${s.public_access ? `` : `<img src='static/lock.svg' class='img-fluid position-absolute bottom-0 end-0 w-25'>`}
+                        ${s.public_access ? `` : `<img src='{{ url_for('static', filename='lock.svg') }}' class='img-fluid position-absolute bottom-0 end-0 w-25'>`}
                         <div class="position-absolute bottom-0 text-body bg-dark bg-opacity-75 px-1 rounded">${s.ping ? s.ping + "ms" : ""}</div>
                     </div>
                 </div>
