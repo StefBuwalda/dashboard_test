@@ -22,12 +22,19 @@
     const data = {
         labels: chartDates,
         datasets: [{
-            label: 'Example Data',
+            label: 'Ping',
             data: {{ values }},
         }]
     };
 
     const ctx = document.getElementById('myChart').getContext('2d');
+    // Current time in UTC
+    const nowUTC = new Date();
+
+    // One hour ago in UTC
+    const oneDayAgoUTC = new Date(nowUTC.getTime() - 24 * 60 * 60 * 1000);
+    const min = "{{ min }}"
+    const max = "{{ max }}"
     new Chart(ctx, {
         type: 'line',
         data: data,
@@ -36,8 +43,14 @@
                 x: {
                     type: 'time', // Important for datetime axis
                     time: {
-                        unit: 'day'
-                    }
+                        unit: 'hour',
+                        tooltipFormat: 'HH:mm:ss',
+                        displayFormats: {
+                            hour: 'HH:mm'
+                        }
+                    },
+                    min: min,
+                    max: max
                 }
             }
         }

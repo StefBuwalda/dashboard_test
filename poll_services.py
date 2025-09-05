@@ -39,11 +39,7 @@ async def check_service(client: aiohttp.ClientSession, s: service) -> log:
     try:
         ctx = SimpleNamespace()
         status = await ping(client=client, s=s, ctx=ctx)
-        print(status)
-        print(vars(ctx))
         if status == 200:
-            print("test")
-            print(ctx.duration_ms)
             return log(service_id=s.id, ping=int(ctx.duration_ms))
         else:
             return log(service_id=s.id, ping=None)

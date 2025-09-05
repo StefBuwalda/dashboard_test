@@ -30,9 +30,12 @@ class log(db.Model):
             "log_id": self.id,
             "service_id": self.service_id,
             "ping": self.ping,
-            "dateCreated": self.dateCreated,
+            "dateCreated": self.dateCreatedUTC(),
             "timeout": self.timeout,
         }
+
+    def dateCreatedUTC(self) -> datetime:
+        return self.dateCreated.replace(tzinfo=timezone.utc)
 
 
 class service(db.Model):

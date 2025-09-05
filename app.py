@@ -8,7 +8,7 @@ from pathlib import Path
 from models import service, log
 from typing import Any, Optional, cast
 import json
-from datetime import timedelta
+from datetime import datetime, timezone, timedelta
 from config import timeout
 
 
@@ -19,7 +19,7 @@ def prepare_chart_data(
     if len(logs) <= 0:  # Return empty if there are no logs
         return ([], [])
 
-    x = [logs[0].dateCreated.isoformat()]
+    x = [logs[0].dateCreatedUTC().isoformat()]
     y = [logs[0].ping]
 
     for i in range(1, len(logs)):
@@ -27,13 +27,13 @@ def prepare_chart_data(
         log2 = logs[i - 1]
 
         # Check if the gap in points exceeds a threshold
-        if (abs(log1.dateCreated - log2.dateCreated)) > timedelta(
+        if (abs(log1.dateCreatedUTC() - log2.dateCreatedUTC())) > timedelta(
             milliseconds=1.5 * (timeout + 1000)
         ):
-            x.append(log2.dateCreated.isoformat())
+            x.append(log2.dateCreatedUTC().isoformat())
             y.append(None)
 
-        x.append(log1.dateCreated.isoformat())
+        x.append(log1.dateCreatedUTC().isoformat())
         y.append(log1.ping)
     return (x, y)
 
@@ -83,10 +83,15 @@ def chart(id: int):
             return abort(code=403)
     x, y = prepare_chart_data(logs=logs)
 
+    now = datetime.now(timezone.utc)
+    max_ = now
+    min_ = now - timedelta(hours=1)
     return render_template(
         "chart.html",
         dates=x,
         values=json.dumps(y),
+        min=min_.isoformat(),
+        max=max_.isoformat(),
     )
 
 
