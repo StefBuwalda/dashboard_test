@@ -1,5 +1,5 @@
 # import requests as r
-from flask import jsonify, render_template, send_file, redirect
+from flask import jsonify, render_template, send_file, abort
 from poll_services import start_async_loop
 from mem import services, app, db
 import threading
@@ -21,8 +21,8 @@ def split_graph(logs: list[log]) -> tuple[list[str], list[Optional[int]]]:
     for i in range(1, len(logs)):
         log1 = logs[i]
         log2 = logs[i - 1]
+        if (abs(log1.dateCreated - log2.dateCreated)) > timedelta(seconds=6):
 
-        if (log1.dateCreated - log2.dateCreated) > timedelta(seconds=6):
             x.append(log2.dateCreated.isoformat())
             y.append(None)
 
@@ -60,11 +60,11 @@ def homepage():
     return render_template("home.html")
 
 
-@app.route("/chart")
-def chart():
+@app.route("/chart/<int:id>")
+def chart(id: int):
     with app.app_context():
         logs = []
-        s = db.session.query(service).first()
+        s = db.session.query(service).filter_by(id=id).first()
         if s:
             logs = cast(
                 list[log],
@@ -73,7 +73,7 @@ def chart():
                 .all(),
             )
         else:
-            return redirect("/")
+            return abort(code=403)
     x, y = split_graph(logs=logs)
 
     return render_template(
